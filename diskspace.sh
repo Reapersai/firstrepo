@@ -5,7 +5,14 @@
   reset= tput sqr0
   space () {
 #here we will give code to get space usage for the server
-
+echo " "
+echo "${green}Disc space usage in server is ${reset}
+echo "$x"
+ssh -q $x "df -kh /opt/dap"
+echo " "
+echo -n "${green}The Maximun disc space occupying by server is ${reset}
+ssh -q $x "df -kh /opt/dap | tail -n +2" | awk '{print($5)}'
+ssh -q $x "cd /opt/dap/domains/;du -sh * 2>/dev/null | grep G"
   }
   cpu() {
 #here we will give the code to get cpu load of the server
