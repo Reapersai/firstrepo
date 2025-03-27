@@ -1,0 +1,63 @@
+pipeline {
+    agent {
+        kubernetes {
+            label 'helm-agent' // label for the pod
+            defaultContainer 'jnlp' // default container for Jenkins agent (this is usually the default one)
+            yaml '''
+apiVersion: v1
+kind: Pod
+metadata:
+  name: helm-pod
+spec:
+  containers:
+  - name: jnlp
+    image: jenkins/agent:latest
+    args: ['$(JENKINS_SECRET)', '$(JENKINS_AGENT_NAME)']
+    volumeMounts:
+    - mountPath: /home/jenkins/agent
+      name: jenkins-agent
+  - name: helm
+    image: lachlanevenson/k8s-helm:3.9.0
+    command:
+      - cat
+    tty: true
+  volumes:
+    - name: jenkins-agent
+      emptyDir: {}
+'''
+        }
+    }
+    environment {
+        KUBECONFIG = '/home/jenkins/.kube/config'
+    }
+    stages {
+        stage('Install Helm') {
+            steps {
+                container('helm') {
+                    script {
+                        echo 'Helm is already installed in the container image.'
+                    }
+                }
+            }
+        }
+        stage('Run Helm Command') {
+            steps {
+                container('helm') {
+                    script {
+                        // Ensure kubectl and Helm are configured for your Kubernetes cluster
+                        sh '''
+                        helm version
+                        helm repo add stable https://charts.helm.sh/stable
+                        helm repo update
+                        '''
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
