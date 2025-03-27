@@ -12,7 +12,10 @@ ssh -q $x "df -kh /opt/dap"
 echo " "
 echo -n "${green}The Maximun disc space occupying by server is ${reset}
 ssh -q $x "df -kh /opt/dap | tail -n +2" | awk '{print($5)}'
-ssh -q $x "cd /opt/dap/domains/;du -sh * 2>/dev/null | grep G"
+ssh -q $x "cd /opt/dap/domains/;du -sh * 2>/dev/null | grep G" >/home/dapeng/vancsai/script/space.txt
+sort -n space.txt | head -1
+./home/dapeng/vancsai/script/space.txt | paste -sd ";">x
+ssh -q %x "cd /tmp; touch y ;chmod 777 y"
   }
   cpu() {
 #here we will give the code to get cpu load of the server
