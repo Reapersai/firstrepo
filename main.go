@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func main() {
 	var conferenceName = "Go Conference"
@@ -19,20 +22,21 @@ func main() {
 		var email string
 		var userTickets uint
 		// Ask user for their name
-		fmt.Printf("Enter your name:- ")
+		fmt.Println("Enter your name:- ")
 		fmt.Scan(&userName)
 
 		// Ask user for their last name
-		fmt.Printf("Enter your last name:- ")
+		fmt.Println("Enter your last name:- ")
 		fmt.Scan(&lastname)
 
 		// Ask user for their email
-		fmt.Printf("Enter your email:- ")
+		fmt.Println("Enter your email:- ")
 		fmt.Scan(&email)
 
 		// Ask user for number of tickets they want
-		fmt.Printf("How many tickets do you want:- ")
+		fmt.Println("How many tickets do you want:- ")
 		fmt.Scan(&userTickets)
+
 		remainingTickets = remainingTickets - userTickets
 		bookings = append(bookings, userName+" "+lastname)
 
@@ -40,5 +44,11 @@ func main() {
 		fmt.Printf("Thank you %v for booking %v tickets!\n", userName, userTickets)
 		fmt.Printf("A confirmation email will be sent to %v.\n", email)
 		fmt.Printf("We have %v tickets remaining for %v!\n\n", remainingTickets, conferenceName)
+		firstname := []string{}
+		for _, bookking := range bookings {
+			names := strings.Fields(bookking)
+			firstname = append(firstname, names[0])
+		}
+		fmt.Printf("List of firstnames of the bookings is as follows:%v\n", firstname)
 	}
 }
